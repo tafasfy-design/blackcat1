@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑猫的低语</title>
+    <!-- 引入Tailwind CSS以快速构建现代化设计 --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入自定义字体 --><link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* * 自定义样式
+         * 我们在这里定义基础氛围、字体和特殊的辉光效果
+         */
+        
+        body {
+            /* 主色调：深邃的午夜紫色 */
+            background-color: #100a1c;
+            color: #e0e0e0;
+            /* 字体：优先使用衬线体营造神秘感，回落到Inter保证易读性 */
+            font-family: 'Inter', 'Cormorant Garamond', sans-serif;
+            overflow-x: hidden; /* 允许垂直滚动，禁止横向滚动 */
+        }
+
+        /* 标题字体 */
+        .font-mystic {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+
+        /* 辉光效果 - 用于按钮和图标 */
+        .glow-effect {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px 0px rgba(167, 139, 250, 0); /* 默认无辉光 */
+        }
+        .glow-effect:hover {
+            color: #fff;
+            box-shadow: 0 0 25px 5px rgba(167, 139, 250, 0.6); /* 悬停时发光 */
+        }
+        
+        /* SVG 黑猫猫头样式 */
+        #black-cat-head-svg {
+            width: 250px; /* 调整猫头大小 */
+            height: auto;
+            transition: transform 0.3s ease;
+            cursor: pointer; /* 表示可点击 */
+        }
+        #black-cat-head-svg:hover {
+            transform: scale(1.05);
+        }
+        
+        /* SVG 中猫眼的辉光动画 */
+        .cat-eye-glow {
+            fill: #00FF85; /* 邪魅绿 */
+            animation: pulseGlow 3s infinite ease-in-out;
+            transform-origin: center; /* 确保缩放动画从中心开始 */
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1);
+                filter: drop-shadow(0 0 8px #00FF85);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 20px #00FF85);
+            }
+        }
+
+        /* 页面切换动效 */
+        .page {
+            display: none; /* 默认隐藏 */
+            animation: fadeIn 1s ease-in-out;
+        }
+        .page.active {
+            display: block; /* 激活时显示 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 塔罗牌 */
+        .tarot-card {
+            width: 150px;
+            height: 250px;
+            background: linear-gradient(145deg, #1f1a30, #130f20);
+            border: 2px solid #a78bfa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            perspective: 1000px;
+        }
+        .tarot-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(167, 139, 250, 0.4);
+        }
+        .tarot-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .tarot-card.flipped .tarot-card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+        .card-back {
+            background: linear-gradient(145deg, #19102A, #2a1a45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 猫爪符文 */
+        .card-back-icon {
+            font-size: 5rem;
+            color: #a78bfa;
+            opacity: 0.6;
+        }
+        .card-front {
+            background-color: #130f20;
+            transform: rotateY(180deg);
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        
+        /* 水晶球 */
+        .crystal-ball {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(167, 139, 250, 0.3) 50%, rgba(112, 0, 255, 0.6) 100%);
+            border-radius: 50%;
+            border: 3px solid #a78bfa;
+            box-shadow: 0 0 30px #a78bfa, inset 0 0 20px rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulseBall 4s infinite ease-in-out;
+        }
+        .crystal-ball:hover {
+            box-shadow: 0 0 50px #c4b5fd, inset 0 0 30px rgba(255,255,255,0.5);
+        }
+        @keyframes pulseBall {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.03); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+    </style>
+</head>
+<body class="min-h-screen w-full transition-all duration-1000 ease-in-out">
+
+    <!-- 1. 登陆页 / 结界 --><div id="splash-screen" class="fixed inset-0 w-full h-full flex flex-col items-center justify-center space-y-8 z-50" style="background-color: #100a1c;">
+        
+        <!-- SVG 黑猫猫头图形 --><div id="cat-head-container" class="relative">
+            <svg id="black-cat-head-svg" viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- 猫头主体 --><path d="M100 0 C20 0 0 60 0 100 C0 140 20 180 100 180 C180 180 200 140 200 100 C200 60 180 0 100 0Z" fill="#0A0A0A"/>
+                
+                <!-- 猫耳 (更尖锐) --><path d="M40 20 L70 50 L80 10 L40 20 Z" fill="#151515"/>
+                <path d="M160 20 L130 50 L120 10 L160 20 Z" fill="#151515"/>
+
+                <!-- 精致的猫眼 --><g id="cat-eye-left-group" class="cat-eye-glow">
+                    <path d="M60 75 C65 65 75 65 80 75 C78 85 70 90 60 75 Z" />
+                    <circle cx="70" cy="80" r="4" fill="#000" /> <!-- 瞳孔 --></g>
+                <g id="cat-eye-right-group" class="cat-eye-glow">
+                    <path d="M120 75 C125 65 135 65 140 75 C138 85 130 90 120 75 Z" />
+                    <circle cx="130" cy="80" r="4" fill="#000" /> <!-- 瞳孔 --></g>
+
+                <!-- 鼻子和嘴巴 (精简) --><path d="M100 110 L95 115 L100 120 L105 115 L100 110 Z" fill="#000" />
+                <path d="M100 120 C95 125 90 130 95 135 C105 135 110 125 100 120 Z" fill="#000" />
+            </svg>
+        </div>
+
+        <h1 class="font-mystic text-3xl text-purple-300 tracking-widest animate-pulse">
+            汝，所求为何？
+        </h1>
+        <p class="font-mystic text-lg text-gray-400 opacity-70 transition-opacity duration-1000 delay-1000">
+            [ 轻抚这只神秘的猫头以进入 ]
+        </p>
+    </div>
+
+    <!-- 2. 主内容区 (默认隐藏) --><main id="main-content" class="w-full max-w-5xl mx-auto p-8 pt-16 sm:pt-24 transition-opacity duration-1000" style="display: none; opacity: 0;">
+        
+        <!-- 导航 / 命运的岔路 --><nav class="flex justify-center space-x-12 md:space-x-24 mb-12">
+            <button class="nav-button glow-effect group" data-page="page-tarot">
+                <span class="text-5xl group-hover:text-purple-300 transition-colors">🔮</span>
+                <span class="font-mystic text-xl mt-2 block">聆听启示</span>
+            </button>
+            <button class="nav-button glow-effect group" data-page="page-market">
+                <span class="text-5xl group-hover:text-purple-300 transition-colors">🐾</span>
+                <span class="font-mystic text-xl mt-2 block">寻觅奇物</span>
+            </button>
+            <button class="nav-button glow-effect group" data-page="page-oracle">
+                <span class="text-5xl group-hover:text-purple-300 transition-colors">✨</span>
+                <span class="font-mystic text-xl mt-2 block">黑猫回答</span>
+            </button>
+        </nav>
+
+        <!-- 内容区域 --><div id="content-area" class="text-center">
+
+            <!-- 占卜之间 (猫爪塔罗) --><div id="page-tarot" class="page">
+                <h2 class="font-mystic text-4xl text-purple-300 mb-6">猫爪塔罗</h2>
+                <p class="text-lg text-gray-400 mb-10">集中精神，默念你的问题... 然后，选择一张牌。</p>
+                
+                <div id="tarot-deck" class="flex flex-col sm:flex-row justify-center items-center space-y-6 sm:space-y-0 sm:space-x-6 min-h-[300px]">
+                    <!-- JS将在这里生成卡牌 --></div>
+                
+                <div id="tarot-result" class="mt-10 min-h-[150px] p-6 bg-black/20 rounded-lg" style="display: none;">
+                    <h3 id="tarot-card-name" class="font-mystic text-3xl text-purple-300"></h3>
+                    <p id="tarot-card-interpretation" class="text-xl text-gray-300 mt-4"></p>
+                </div>
+            </div>
+
+            <!-- 暗影集市 --><div id="page-market" class="page">
+                <h2 class="font-mystic text-4xl text-purple-300 mb-8">暗影集市</h2>
+                <p class="text-lg text-gray-400 mb-10">来自黑猫工匠的奇物。仅在午夜时分补货。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 max-w-2xl mx-auto text-left">
+                    <div class="market-item glow-effect p-4 border-l-2 border-purple-700 transition-all hover:bg-purple-900/30 hover:border-purple-400" onclick="showMarketModal(this)">
+                        <h3 class="font-mystic text-2xl text-purple-300">附魔猫薄荷护身符</h3>
+                        <p class="text-gray-400">简介：吸引九条命的祝福。</p>
+                    </div>
+                    <div class="market-item glow-effect p-4 border-l-2 border-purple-700 transition-all hover:bg-purple-900/30 hover:border-purple-400" onclick="showMarketModal(this)">
+                        <h3 class="font-mystic text-2xl text-purple-300">凝视深渊·马克杯</h3>
+                        <p class="text-gray-400">简介：当你喝咖啡时，咖啡也在凝视你。</p>
+                    </div>
+                    <div class="market-item glow-effect p-4 border-l-2 border-purple-700 transition-all hover:bg-purple-900/30 hover:border-purple-400" onclick="showMarketModal(this)">
+                        <h3 class="font-mystic text-2xl text-purple-300">午夜低语·T恤</h3>
+                        <p class="text-gray-400">简介：上面印着你听不懂的喵喵声。</p>
+                    </div>
+                    <div class="market-item glow-effect p-4 border-l-2 border-purple-700 transition-all hover:bg-purple-900/30 hover:border-purple-400" onclick="showMarketModal(this)">
+                        <h3 class="font-mystic text-2xl text-purple-300">黑猫巫师会徽章</h3>
+                        <p class="text-gray-400">简介：证明你被选中了（或者只是被容忍）。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 黑猫的回答 (Yes/No) --><div id="page-oracle" class="page">
+                <h2 class="font-mystic text-4xl text-purple-300 mb-6">黑猫的回答</h2>
+                <p class="text-lg text-gray-400 mb-6">输入那个困扰你的、非黑-即白的问题。</p>
+                
+                <input id="oracle-question" type="text" placeholder="在此输入你的问题..." class="w-full max-w-lg p-3 bg-gray-900/50 border border-purple-400 rounded-lg text-center text-white text-lg focus:outline-none focus:ring-2 focus:ring-purple-300">
+                
+                <div class="flex justify-center my-10">
+                    <div id="crystal-ball-button" class="crystal-ball" role="button" aria-label="获取答案"></div>
+                </div>
+                
+                <div id="oracle-result" class="mt-8 min-h-[100px] p-4">
+                    <p id="oracle-answer-text" class="font-mystic text-4xl text-purple-200 transition-opacity duration-500 opacity-0"></p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- 市场商品 模态窗口 --><div id="market-modal" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-40" style="display: none;">
+        <div class="bg-gray-900 border border-purple-600 p-8 rounded-lg shadow-2xl max-w-md w-full text-center relative">
+            <button onclick="hideMarketModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-2xl">&times;</button>
+            <h3 id="modal-item-name" class="font-mystic text-3xl text-purple-300 mb-4"></h3>
+            <p class="text-lg text-gray-300">
+                人类的炼金术（支付系统）正在维护中。
+                <br><br>
+                黑猫议会已记录你的渴望，时机成熟时，它将属于你。
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- 占卜数据 (本地化) ---
+
+        // 猫爪塔罗牌库 (简化版)
+        const tarotDeckData = [
+            { 
+                name: "黑猫·愚者", 
+                interpretation: "黑猫在悬崖边伸了个懒腰。——是时候随心所欲地迈出第一步了，别担心，你总能四脚着地。" 
+            },
+            { 
+                name: "月亮·凝视", 
+                interpretation: "阴影中潜藏着不安，但也隐藏着直觉。相信你内心的喵喵叫，即使道路模糊不清。" 
+            },
+            { 
+                name: "太阳·打盹", 
+                interpretation: "万物清晰而温暖。这是享受小鱼干、接受赞美和放松肚皮的最佳时机。纯粹的喜悦。" 
+            },
+            { 
+                name: "魔术师·肉垫", 
+                interpretation: "你桌上的瓶瓶罐罐（和你的注意力）都在它的掌控之中。你拥有创造所需的一切，只需一点点“混乱”。" 
+            },
+            { 
+                name: "隐者·灯笼", 
+                interpretation: "是时候缩回你的纸箱（内心世界）了。独自思考，你会发现爪子下那颗被遗忘的弹珠（真相）。" 
+            }
+        ];
+
+        // 黑猫的回答库
+        const oracleAnswers = [
+            "喵。",
+            "嘶... (否定的嘶嘶声)",
+            "也许...但你得先给我小鱼干。",
+            "我正在打盹，晚点再问。",
+            "完美的时机！去吧。",
+            "它从桌上掉下去了。(代表'不')",
+            "你问了一只猫。你觉得呢？(是)",
+            "呼噜呼噜... (非常肯定)",
+            "问题不在于此。问题在于，你的碗是空的。"
+        ];
+
+        // --- DOM 元素引用 ---
+        const splashScreen = document.getElementById('splash-screen');
+        const mainContent = document.getElementById('main-content');
+        const enterButton = document.getElementById('cat-head-container'); // 现在点击猫头进入
+        const contentArea = document.getElementById('content-area');
+        const navButtons = document.querySelectorAll('.nav-button');
+        const pages = document.querySelectorAll('.page');
+        /* 移除 customCursor 和 bodyEl 变量 */
+
+        // --- 1. 结界 (猫头) 逻辑 ---
+        // 抚摸 (点击) 进入
+        enterButton.addEventListener('click', () => {
+            splashScreen.style.opacity = '0';
+            splashScreen.style.pointerEvents = 'none'; // 确保它不能再被点击
+            
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                // 延迟显示主内容
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                }, 50);
+                
+                // 默认显示塔罗牌页面
+                showPage('page-tarot');
+            }, 1000); // 等待淡出动画完成
+        });
+
+
+        // --- 2. 页面导航 ---
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const pageId = button.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+
+        function showPage(pageId) {
+            pages.forEach(page => {
+                if (page.id === pageId) {
+                    page.classList.add('active');
+                    // 根据页面内容触发特定逻辑
+                    if (pageId === 'page-tarot') {
+                        setupTarotDeck();
+                    }
+                } else {
+                    page.classList.remove('active');
+                }
+            });
+        }
+
+        // --- 3. 占卜功能 (A) - 猫爪塔罗 ---
+        const tarotDeckContainer = document.getElementById('tarot-deck');
+        const tarotResultContainer = document.getElementById('tarot-result');
+        const tarotCardName = document.getElementById('tarot-card-name');
+        const tarotCardInterpretation = document.getElementById('tarot-card-interpretation');
+
+        let deckInitialized = false;
+        /* ... (setupTarotDeck, drawTarot, resetTarotDeck 保持不变) ... */
+        function setupTarotDeck() {
+            // 防止重复初始化
+            if (deckInitialized) {
+                // 如果已经抽过牌，重置卡组
+                if(tarotResultContainer.style.display !== 'none') {
+                    resetTarotDeck();
+                }
+                return;
+            };
+
+            tarotDeckContainer.innerHTML = ''; // 清空
+            tarotResultContainer.style.display = 'none';
+
+            // 我们只创建3张牌背，无论牌库多大，增加神秘感
+            for (let i = 0; i < 3; i++) {
+                const card = document.createElement('div');
+                card.className = 'tarot-card';
+                card.innerHTML = `
+                    <div class="tarot-card-inner">
+                        <div class="card-face card-back">
+                            <span class="card-back-icon">🐾</span>
+                        </div>
+                        <div class="card-face card-front">
+                            <h4 class="card-name-front text-purple-300 font-mystic text-lg"></h4>
+                            <p class="card-desc-front text-gray-400 text-sm"></p>
+                        </div>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => drawTarot(card));
+                tarotDeckContainer.appendChild(card);
+            }
+            deckInitialized = true;
+        }
+        
+        function drawTarot(clickedCard) {
+            // 防止重复点击
+            if (clickedCard.classList.contains('flipped') || tarotDeckContainer.classList.contains('disabled')) {
+                return;
+            }
+            
+            // 禁用牌组
+            tarotDeckContainer.classList.add('disabled');
+
+            // 1. 随机抽牌
+            const randomIndex = Math.floor(Math.random() * tarotDeckData.length);
+            const drawnCard = tarotDeckData[randomIndex];
+
+            // 2. 填充卡面信息 (在翻转前)
+            const frontName = clickedCard.querySelector('.card-name-front');
+            const frontDesc = clickedCard.querySelector('.card-desc-front');
+            frontName.textContent = drawnCard.name;
+            frontDesc.textContent = drawnCard.interpretation.substring(0, 50) + "..."; // 简短描述
+
+            // 3. 翻转卡片
+            clickedCard.classList.add('flipped');
+            
+            // 4. 让其他卡片消失
+            tarotDeckContainer.querySelectorAll('.tarot-card').forEach(card => {
+                if (card !== clickedCard) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(50px)';
+                }
+            });
+
+            // 5. 显示结果 (延迟)
+            setTimeout(() => {
+                tarotCardName.textContent = drawnCard.name;
+                tarotCardInterpretation.textContent = drawnCard.interpretation;
+                tarotResultContainer.style.display = 'block';
+                tarotResultContainer.style.opacity = '0';
+                setTimeout(() => { tarotResultContainer.style.opacity = '1'; }, 100);
+                
+                // 提供重置选项
+                const resetButton = document.createElement('button');
+                resetButton.textContent = "再次占卜";
+                resetButton.className = "mt-6 px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-full glow-effect";
+                resetButton.onclick = resetTarotDeck;
+                tarotResultContainer.appendChild(resetButton);
+
+            }, 1000); // 等待翻转动画
+        }
+        
+        function resetTarotDeck() {
+            tarotDeckContainer.classList.remove('disabled');
+            tarotResultContainer.style.display = 'none';
+            tarotResultContainer.querySelector('button')?.remove(); // 移除重置按钮
+            
+            tarotDeckContainer.querySelectorAll('.tarot-card').forEach(card => {
+                card.classList.remove('flipped');
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+            deckInitialized = false; // 允许重新初始化
+            setupTarotDeck();
+        }
+
+
+        // --- 4. 占卜功能 (B) - 黑猫的回答 ---
+        const oracleButton = document.getElementById('crystal-ball-button');
+        const oracleQuestion = document.getElementById('oracle-question');
+        const oracleAnswerText = document.getElementById('oracle-answer-text');
+
+        oracleButton.addEventListener('click', () => {
+            // 检查是否输入了问题 (仪式感)
+            if (oracleQuestion.value.trim() === '') {
+                oracleAnswerText.style.opacity = '0';
+                setTimeout(() => {
+                    oracleAnswerText.textContent = "你必须先提问，喵...";
+                    oracleAnswerText.style.opacity = '1';
+                }, 100);
+                return;
+            }
+
+            // 1. 开始动画
+            oracleAnswerText.style.opacity = '0';
+            oracleButton.style.animation = 'pulseBall 0.5s 2 ease-in-out'; // 快速脉动两次
+            
+            // 2. 随机获取答案
+            const randomIndex = Math.floor(Math.random() * oracleAnswers.length);
+            const answer = oracleAnswers[randomIndex];
+
+            // 3. 延迟显示答案
+            setTimeout(() => {
+                oracleAnswerText.textContent = answer;
+                oracleAnswerText.style.opacity = '1';
+                oracleButton.style.animation = 'pulseBall 4s infinite ease-in-out'; // 恢复正常脉动
+                oracleQuestion.value = ''; // 清空问题
+            }, 1000); // 等待动画
+        });
+
+        // --- 5. 暗影集市 模态窗口 ---
+        const marketModal = document.getElementById('market-modal');
+        const modalItemName = document.getElementById('modal-item-name');
+
+        function showMarketModal(itemElement) {
+            const itemName = itemElement.querySelector('h3').textContent;
+            modalItemName.textContent = itemName;
+            marketModal.style.display = 'flex';
+            setTimeout(() => { marketModal.style.opacity = '1'; }, 10); // 触发淡入
+        }
+
+        function hideMarketModal() {
+            marketModal.style.opacity = '0';
+            setTimeout(() => { marketModal.style.display = 'none'; }, 300); // 等待淡出
+        }
+        // 点击模态框背景也可关闭
+        marketModal.addEventListener('click', (e) => {
+            if (e.target === marketModal) {
+                hideMarketModal();
+            }
+        });
+
+        // --- 6. 移除自定义光标交互 ---
+        /* 移除 document.addEventListener('mouseover', ...) */
+
+    </script>
+</body>
+</html>
